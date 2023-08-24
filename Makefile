@@ -6,14 +6,15 @@
 #    By: ihama <ihama@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/09 20:54:02 by voszadcs          #+#    #+#              #
-#    Updated: 2023/08/20 19:44:18 by ihama            ###   ########.fr        #
+#    Updated: 2023/08/24 20:31:24 by ihama            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= minishell
 
 VPATH 	= src/
-SRCS	= minishell.c parser.c lexer.c builtins/exit_builtins.c builtins/echo_builtins.c builtins/pwd_builtins.c builtins/env_builtins.c  environnement/dup_env.c builtins/export_builtins.c
+SRCS	= minishell.c parser.c lexer.c builtins/exit_builtins.c builtins/echo_builtins.c builtins/pwd_builtins.c builtins/env_builtins.c  environnement/dup_env.c builtins/export_builtins.c \
+		   builtins/unset_builtins.c builtins/cd_builtins.c builtins/builtins.c
 OBJS	= $(SRCS:.c=.o)
 
 CC		= cc -g

@@ -1,27 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit_builtins.c                                    :+:      :+:    :+:   */
+/*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/17 17:01:04 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/22 15:28:21 by ihama            ###   ########.fr       */
+/*   Created: 2023/08/24 15:34:06 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/24 16:30:43 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/minishell.h"
-
-int	execute_exit(char **args)
+void execute_cmd(char **args, t_redr *envpp)
 {
-	int		exit_code;
-
-	exit_code = 0;
-	if (args[0])
-		ft_putstr_fd("exit\n", STDERR_FILENO);
-	if (args[1] && args[2])
-		ft_putstr_fd("Error: Too many argument\n", STDERR_FILENO);
-	if (args[0])
-		exit_code = ft_atoi(args[0]);
-	exit(exit_code);
+    if (is_builtin(args[0]))
+        execute_builtins(args, envpp);
+    else
 }

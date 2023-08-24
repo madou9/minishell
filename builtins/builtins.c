@@ -6,59 +6,87 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:26 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/19 18:06:38 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/24 22:00:12 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
-char	**dup_env(char **env)
+void	execute_builtins(char **args, t_redr *envpp)
 {
-	char	**new_env;
-	int		i;
-
-	new_env = (char **)malloc(sizeof(char *) * (i + 1));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (env[i])
-	{
-		new_env[i] = ft_strdup(env[i]);
-		i++;
-	}
-	return (i);
+	if (!strcmp(args[0], "echo"))
+		execute_echo(args);
+	else if (!strcmp(args[0], "exit"))
+		execute_exit(args);
+	else if (!strcmp(args[0], "pwd"))
+		execute_pwd(args);
+	else if (!strcmp(args[0], "env"))
+		execute_env(envpp);
+	else if (!strcmp(args[0], "export"))
+		execute_export(args, envpp);
+	else if (!strcmp(args[0], "unset"))
+		execute_unset(args, envpp);
+	else if (!strcmp(args[0], "cd"))
+		execute_cd(args, envpp);
 }
 
-int	main(int argc, char **argv, char **env)
+int	is_builtin(const char *command)
 {
-	char	*message;
+	return (!strncmp(command, "echo", 4)
+		|| (!strncmp(command, "exit", 4))
+		|| (!strncmp(command, "pwd", 3))
+		|| (!strncmp(command, "env", 3))
+		|| (!strncmp(command, "export", 6))
+		|| (!strncmp(command, "unset", 5))
+		|| !strncmp(command, "cd", 2));
+}
 
-	g_env = dup_env(env);
+char	*get_path_cmd(char *cmd, char **env)
+{
+	char	**all_path;
+	char	*cmd_path;
+	char	*new_sub;
 
-	while (1)
+	while (*env && !ft_strnstr(*env, "PATH=", 5))
+		env++;
+	new_sub = ft_substr(*env, 5, ft_strlen(*env) - 5);
+	all_path = ft_split(new_sub, ':');
+	free(new_sub);
+	cmd = *ft_split(cmd, ' ');
+	new_sub = ft_strjoin("/", cmd);
+	while (*all_path)
 	{
-		message = readline("MinniShell$: ");
-		add_history(message);
-		if (strcmp(argv[0], "echo") == 0)
-			execute_echo(argv);
-		else if (strcmp(argv[0], "cd") == 0)
-			execute_cd(argv);
-		else if (strcmp(argv[0], "pwd") == 0)
-			execute_pwd();
-		else if (strcmp(argv[0], "export") == 0)
-			execute_export(argv);
-		else if (strcmp(argv[0], "unset") == 0)
-			execute_unset(argv);
-		else if (strcmp(argv[0], "env") == 0)
-			execute_env();
-		else if (strcmp(argv[0], "exit") == 0)
-			execute_exit();
-		else
-		{
-			// Handle external commands using fork and exec
-			// ...
-		}
-
+		cmd_path = ft_strjoin(*all_path, new_sub);
+		if (cmd_path == 0)
+			return (NULL);
+		if (access(cmd_path, F_OK) == 0)
+			break ;
+		free(cmd_path);
+		all_path++;
 	}
-	return 0;
+	free(new_sub);
+	free(cmd);
+	return (cmd_path);
+}
+
+void	execute_external(char **args, t_redr *envpp)
+{
+	char	*cmd_path;
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == -1)
+		printf("fork error");
+	else if (pid == 0)
+	{
+		cmd_path = get_path_cmd(args[0], envpp->env);
+		if (!cmd_path)
+		{
+			printf("fork error");
+			exit(EXIT_FAILURE);
+		}
+		execve(cmd_path, args, envpp->env);
+	}	
+	waitpid(pid, &status, 0);
 }

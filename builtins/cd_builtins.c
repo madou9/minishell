@@ -6,75 +6,61 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:43 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/19 19:41:32 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/24 15:19:11 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
-// int	change(char *path, int home)
-// {
-// 	char	*pwd;
-
-// 	pwd = getcwd(NULL, 0);
-// 	if (!chdir(path))
-// 	{
-// 		if (pwd)
-// 		{
-// 			set_env("OLDPWD", pwd);
-// 			free(pwd);
-// 		}
-// 		if ((pwd = getcwd(NULL, 0)))
-// 		{
-// 			set_env("PWD", pwd);
-// 			free(pwd);
-// 		}
-// 		if (home)
-// 			free(path);
-// 		return (1);
-// 	}
-// 	free(pwd);
-// 	return (0);
-// }
-
-char	*get_env(const char *str, t_input *input)
+int	old_pwd(char **args, t_redr *direction)
 {
-	size_t	str_len;
-	int		i;
+	char		*update_oldpwd;
+	char		*update_pwd;
+	char		*pwd;
 
-	str_len = ft_strlen(str);
-	i = 0;
-	while (input->redirections->env[i])
-	{
-		if (!strncmp(input->redirections->env[i], str, str_len))
-			return (strdup(input->redirections->env[i] + str_len));
-		i++;
+	if (strncmp(args[1], "-", 1) == 0)
+	{		
+		pwd = getcwd(NULL, 0);
+		if (!pwd)
+			ft_putstr_fd("Error: OLDPWD not set\n", STDERR_FILENO);
+		update_oldpwd = ft_getenv(direction->env, "OLDPWD");
+		if (chdir(update_oldpwd) == -1)
+			ft_putstr_fd("Error: can't OLDPWD\n", STDERR_FILENO);
+		update_pwd = ft_strjoin("PWD=", pwd);
+		update_or_add_variable(direction, update_pwd);
 	}
-	return (NULL);
+	return (EXIT_SUCCESS);
 }
 
-int	execute_cd(t_input *input, char *direction)
+int	execute_cd(char **args, t_redr *direction)
 {
-	char		**args;
-	const char	*home_dir;
-	const char	*old_pwd;
+	if (args[1] == NULL)
+		home_case(args, direction);
+	else if (ft_strncmp(args[1], "-", 1) == 0)
+		old_pwd(args, direction);
+	else
+	{
+		if (chdir(args[1]) == -1)
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(args[1], STDERR_FILENO);
+		}
+	}
+	return (EXIT_SUCCESS);
+}
 
-	args = input->str;
+int	home_case(char **args, t_redr *env)
+{
+	char	*home_dir;
+	char	*update_pwd;
+
 	if (args[1] == NULL)
 	{
-		home_dir = ft_getenv(direction, "HOME=");
-		if (!home_dir)
-			ft_putstr_fd("Error: HOME not set \n", STDERR_FILENO);
+		home_dir = ft_getenv(env->env, "HOME");
 		if (chdir(home_dir) == -1)
-			ft_putstr_fd("Error: cd cannot change directory", STDERR_FILENO);
+			ft_putstr_fd("Error: cd cannot change directory\n", STDERR_FILENO);
+		update_pwd = ft_strjoin("PWD=", home_dir);
+		update_or_add_variable(env, update_pwd);
 	}
-	else if (strcmp(args[1], "-") == 0)
-	{		
-		old_pwd = getcwd("OLDPWD\n", 7);
-		if (!old_pwd)
-			ft_putstr_fd("Error: OLDPWD not set\n", STDERR_FILENO);
-		if (chdir(old_pwd) == -1)
-			ft_putstr_fd("Error: can't OLDPWD\n", STDERR_FILENO);
-	}
-	return (update_pwd());
+	return (0);
 }

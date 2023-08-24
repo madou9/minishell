@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:40:25 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/21 21:54:35 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/22 15:27:48 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,37 +36,42 @@ void	update_environment(t_redr *direction, char *new_var)
 	direction->env = new_env;
 }
 
-bool	check_variable(t_redr *direc, char *var)
+bool	update_or_add_variable(t_redr *envpp, char *new_var)
 {
-	int	i;
+	char	*value;
+	int		j;
+	bool	updated_value;
 
-	i = 0;
-	while (direc->env[i] != NULL)
+	value = ft_strchr(new_var, '=');
+	if (value != NULL)
 	{
-		if (strncmp(direc->env[i], var, ft_strlen(var)) == 0)
-			return (true);
-		i++;
+		value++;
+		updated_value = false;
+		j = 0;
+		while (envpp->env[j] != NULL)
+		{
+			if (strncmp(envpp->env[j], new_var, value - new_var) == 0)
+			{
+				envpp->env[j] = new_var;
+				updated_value = true;
+			}
+			j++;
+		}
+		if (!updated_value)
+			update_environment(envpp, new_var);
 	}
 	return (false);
 }
 
 void	update_export(char **args, t_redr *envpp)
 {
-	int		i;
-	char	*value;
+	int	i;
 
 	i = 0;
 	while (args[i] != NULL)
 	{
-		value = ft_strchr(args[i], '=');
-		if (value != NULL)
-		{
-			value++;
-			if (!check_variable(envpp, args[i]))
-				update_environment(envpp, args[i]);
-			else
-				fprintf(stderr, "Error: Variable %s already exists.\n", args[i]);
-		}
+		if (update_or_add_variable(envpp, args[i]))
+			fprintf(stderr, "Error: Invalid variable format: %s\n", args[i]);
 		i++;
 	}
 }
