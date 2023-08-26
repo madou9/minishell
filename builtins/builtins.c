@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:26 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/24 22:00:12 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/26 11:46:10 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ void	execute_builtins(char **args, t_redr *envpp)
 
 int	is_builtin(const char *command)
 {
-	return (!strncmp(command, "echo", 4)
-		|| (!strncmp(command, "exit", 4))
-		|| (!strncmp(command, "pwd", 3))
-		|| (!strncmp(command, "env", 3))
-		|| (!strncmp(command, "export", 6))
-		|| (!strncmp(command, "unset", 5))
-		|| !strncmp(command, "cd", 2));
+	return (!ft_strncmp(command, "echo", 4)
+		|| (!ft_strncmp(command, "exit", 4))
+		|| (!ft_strncmp(command, "pwd", 3))
+		|| (!ft_strncmp(command, "env", 3))
+		|| (!ft_strncmp(command, "export", 6))
+		|| (!ft_strncmp(command, "unset", 5))
+		|| !ft_strncmp(command, "cd", 2));
 }
 
 char	*get_path_cmd(char *cmd, char **env)

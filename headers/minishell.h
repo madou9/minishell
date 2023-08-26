@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 03:58:45 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/24 21:48:02 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/26 11:47:37 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_redr
 	char	**env;
 	char	*input_file;
 	char	*output_file;
+	char	*value;
 }	t_redr;
 
 typedef struct s_mylist
@@ -83,6 +84,6 @@ int		old_pwd(char **args, t_redr *direction);
 // builtins
 void	execute_builtins(char **args, t_redr *envpp);
 int		is_builtin(const char *command);
-char	*get_path_cmd(char *cmd, char **env);
-void	execute_external(char **args, t_redr *direction);
+void	execute_external(char **args, t_redr *envpp);
+// ww
 #endif

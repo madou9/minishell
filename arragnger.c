@@ -1,64 +1,45 @@
-void close_all_pipes(int pipes[][2], int num_pipes) {
-    for (int i = 0; i < num_pipes; i++) {
-        close(pipes[i][0]); // Close read end
-        close(pipes[i][1]); // Close write end
-    }
-}
+void execute_external(char **args, t_redr *envpp) {
+    char *cmd_path;
+    pid_t pid;
+    int fd[2];
+    int status;
 
-void close_unused_pipes(int pipes[][2], int num_pipes, int current_pipe) {
-    // Close all read ends of pipes except the one being used
-    for (int i = 0; i < num_pipes; i++) {
-        if (i != current_pipe) {
-            close(pipes[i][0]);
-        }
-    }
-    // Close all write ends of pipes except the one being used
-    for (int i = 0; i < num_pipes - 1; i++) {
-        if (i != current_pipe - 1) {
-            close(pipes[i][1]);
-        }
-    }
-}
-
-
-void execute_pipeline(char **commands, t_redr *envpp) {
-    int num_commands = 0;
-    while (commands[num_commands]) {
-        num_commands++;
+    if (pipe(fd) == -1) {
+        perror("Pipe creation error");
+        return;
     }
 
-    int pipes[num_commands - 1][2];
-    for (int i = 0; i < num_commands - 1; i++) {
-        pipe(pipes[i]);
+    pid = fork();
+    if (pid == -1) {
+        perror("Fork error");
+        return;
     }
 
-    for (int i = 0; i < num_commands; i++) {
-        pid_t pid = fork();
-        if (pid == 0) {
-            if (i != 0) {
-                dup2(pipes[i - 1][0], STDIN_FILENO);
-            }
-            if (i != num_commands - 1) {
-                dup2(pipes[i][1], STDOUT_FILENO);
-            }
-            close_unused_pipes(pipes, num_commands, i);
-            
-            if (is_builtin(&commands[i][0])) {
-                execute_builtins(&commands[i], envpp);
-            } else {
-                execute_external(&commands[i], envpp);
-            }
-            exit(EXIT_SUCCESS);
-        } else if (pid < 0) {
-            perror("Fork error");
+    if (pid == 0) {
+        // Child process code
+        close(fd[0]); // Close read end of the pipe
+
+        // Redirect standard output to the write end of the pipe
+        dup2(fd[1], STDOUT_FILENO);
+        close(fd[1]); // Close duplicated file descriptor
+
+        cmd_path = get_path_cmd(args[0], envpp->env);
+        if (!cmd_path) {
+            perror("Command path not found");
             exit(EXIT_FAILURE);
         }
-    }
 
-    close_all_pipes(pipes, num_commands);
+        execve(cmd_path, args, envpp->env);
+        perror("Execve error");
+        exit(EXIT_FAILURE);
+    } else {
+        // Parent process code
+        close(fd[1]); // Close write end of the pipe
 
-    for (int i = 0; i < num_commands; i++) {
-        wait(NULL);
+        // Redirect standard input to the read end of the pipe
+        dup2(fd[0], STDIN_FILENO);
+        close(fd[0]); // Close duplicated file descriptor
+
+        waitpid(pid, &status, 0);
     }
 }
-
