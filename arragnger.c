@@ -1,45 +1,57 @@
-void execute_external(char **args, t_redr *envpp) {
-    char *cmd_path;
-    pid_t pid;
-    int fd[2];
-    int status;
+bool	is_export_valid(char *valu)
+{
+	int	i;
 
-    if (pipe(fd) == -1) {
-        perror("Pipe creation error");
-        return;
-    }
+	i = 0;
+	if (!ft_isalpha_cha(*valu))
+		return (false);
+	while (valu[i])
+	{
+		if (valu[i] == '=' || (valu[i] == '+' && valu[i + 1] == '='))
+			return (true);
+		i++;
+	}
+	return (false);
+}
 
-    pid = fork();
-    if (pid == -1) {
-        perror("Fork error");
-        return;
-    }
+bool	is_token_valid_export(char *args)
+{
+	if (is_export_valid(args))
+	{
+		ft_putstr_fd("export not a valid identifier ", STDERR_FILENO);
+		ft_putstr_fd(args, STDERR_FILENO);
+		ft_putstr_fd("\n", STDERR_FILENO);
+		return (false);
+	}
+	return (true);
+}
 
-    if (pid == 0) {
-        // Child process code
-        close(fd[0]); // Close read end of the pipe
+int execute_export(char **args, t_redr *direction)
+{
+    int i;
+    char **env;
 
-        // Redirect standard output to the write end of the pipe
-        dup2(fd[1], STDOUT_FILENO);
-        close(fd[1]); // Close duplicated file descriptor
-
-        cmd_path = get_path_cmd(args[0], envpp->env);
-        if (!cmd_path) {
-            perror("Command path not found");
-            exit(EXIT_FAILURE);
+    i = 0;
+	env = direction->env;
+	if (args[1] != NULL)
+		update_export(args, direction);
+    while (env[i] != NULL)
+    {
+        if (ft_strchr(env[i], '='))
+        {
+            ft_putstr_fd("declare -x ", STDOUT_FILENO);
+            // Print variable name until '='
+            int j = 0;
+            while (env[i][j] != '=')
+            {
+                ft_putchar_fd(env[i][j], STDOUT_FILENO);
+                j++;
+            }
+            // Print variable value enclosed in double quotes
+            printf("=\"%s\"\n", &env[i][j + 1]);
         }
-
-        execve(cmd_path, args, envpp->env);
-        perror("Execve error");
-        exit(EXIT_FAILURE);
-    } else {
-        // Parent process code
-        close(fd[1]); // Close write end of the pipe
-
-        // Redirect standard input to the read end of the pipe
-        dup2(fd[0], STDIN_FILENO);
-        close(fd[0]); // Close duplicated file descriptor
-
-        waitpid(pid, &status, 0);
+        i++;
+		update_export(args, direction);
     }
+    return (EXIT_SUCCESS);
 }

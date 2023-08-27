@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:40:25 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/22 15:27:48 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/27 22:26:51 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,22 @@ bool	update_or_add_variable(t_redr *envpp, char *new_var)
 	return (false);
 }
 
+bool	is_export_valid(char *valu)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha_cha(*valu) && *valu != '_')
+		printf("export: %c: not a valid identifier\n", valu[i]);
+	while (valu[i])
+	{
+		if (valu[i] == '=' || (valu[i] == '+' && valu[i + 1] == '='))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 void	update_export(char **args, t_redr *envpp)
 {
 	int	i;
@@ -70,30 +86,41 @@ void	update_export(char **args, t_redr *envpp)
 	i = 0;
 	while (args[i] != NULL)
 	{
-		if (update_or_add_variable(envpp, args[i]))
-			fprintf(stderr, "Error: Invalid variable format: %s\n", args[i]);
+		if (is_export_valid(args[i]))
+			update_or_add_variable(envpp, args[i]);
+		i++;
+	}
+}
+
+void	print_export(t_redr *direction)
+{
+	char	**env;
+	int		i;
+	int		j;
+
+	env = direction->env;
+	i = 0;
+	while (env[i] != NULL && ft_strchr(env[i], '='))
+	{
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		j = 0;
+		while (env[i][j] != '=')
+		{
+			ft_putchar_fd(env[i][j], STDOUT_FILENO);
+			j++;
+		}
+		printf("=\"%s\"\n", &env[i][j + 1]);
 		i++;
 	}
 }
 
 int	execute_export(char **args, t_redr *direction)
 {
-	int		i;
-
-	i = 0;
 	if (args[1] == NULL)
-	{
-		while (direction->env[i] != NULL)
-		{
-			ft_putstr_fd("declare -x ", STDOUT_FILENO);
-			ft_putstr_fd(direction->env[i], STDOUT_FILENO);
-			ft_putchar_fd('\n', STDOUT_FILENO);
-			i++;
-		}
-	}
+		print_export(direction);
 	else
 	{
-		if (args[i] != NULL)
+		if (args[1] != NULL)
 			update_export(args, direction);
 	}
 	return (EXIT_SUCCESS);

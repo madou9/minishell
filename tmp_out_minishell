@@ -1,0 +1,2 @@
+MinniShell$: /bin/echo text"'$USER'" ' $USER '
+MinniShell$: 

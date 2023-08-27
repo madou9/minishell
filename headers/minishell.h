@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 03:58:45 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/26 11:47:37 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/27 20:59:03 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,10 @@ int		execute_env(t_redr *tmp);
 char	**dup_env(char **env);
 void	update_environment(t_redr *direction, char *new_var);
 bool	update_or_add_variable(t_redr *envpp, char *new_var);
+bool	is_token_valid_export(char *args);
 int		execute_export(char **args, t_redr *direction);
-void	update_export(char **args, t_redr *envpp);
+void	print_export(t_redr *direction);
+//void	update_export(char **args, t_redr *envpp);
 int		execute_unset(char **args, t_redr *envpp);
 bool	remove_variable(char **envpp, const char *var);
 void	free_environment(char **envpp);
@@ -85,5 +87,9 @@ int		old_pwd(char **args, t_redr *direction);
 void	execute_builtins(char **args, t_redr *envpp);
 int		is_builtin(const char *command);
 void	execute_external(char **args, t_redr *envpp);
-// ww
+// redirection 
+int	input_redirection(char *infile);
+int	output_redirection_append(char **args);
+int	output_redirection(char **outfile);
+int	check_redirection(char **args);
 #endif

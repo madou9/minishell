@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:26 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/26 11:46:10 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/27 14:12:33 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 void	execute_builtins(char **args, t_redr *envpp)
 {
-	if (!strcmp(args[0], "echo"))
+	if (!ft_strcmp(args[0], "echo"))
 		execute_echo(args);
-	else if (!strcmp(args[0], "exit"))
+	else if (!ft_strcmp(args[0], "exit"))
 		execute_exit(args);
-	else if (!strcmp(args[0], "pwd"))
+	else if (!ft_strcmp(args[0], "pwd"))
 		execute_pwd(args);
-	else if (!strcmp(args[0], "env"))
+	else if (!ft_strcmp(args[0], "env"))
 		execute_env(envpp);
-	else if (!strcmp(args[0], "export"))
+	else if (!ft_strcmp(args[0], "export"))
 		execute_export(args, envpp);
-	else if (!strcmp(args[0], "unset"))
+	else if (!ft_strcmp(args[0], "unset"))
 		execute_unset(args, envpp);
-	else if (!strcmp(args[0], "cd"))
+	else if (!ft_strcmp(args[0], "cd"))
 		execute_cd(args, envpp);
 }
 
@@ -73,20 +73,20 @@ void	execute_external(char **args, t_redr *envpp)
 {
 	char	*cmd_path;
 	pid_t	pid;
-	int		status;
+	//int		status;
 
 	pid = fork();
 	if (pid == -1)
 		printf("fork error");
 	else if (pid == 0)
 	{
-		cmd_path = get_path_cmd(args[0], envpp->env);
+		cmd_path = get_path_cmd(*args, envpp->env);
 		if (!cmd_path)
 		{
-			printf("fork error");
+			perror("Error: path not found\n");
 			exit(EXIT_FAILURE);
 		}
 		execve(cmd_path, args, envpp->env);
 	}	
-	waitpid(pid, &status, 0);
+	waitpid(pid, NULL, 0);
 }
