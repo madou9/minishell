@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/09 20:47:57 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/31 14:48:29 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/31 15:24:51 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int	main(int argc, char **argv, char **env)
 		free(message);
 		free(temp);
 		dup2(tmpfd, STDOUT_FILENO);
-
 	}
 	return (0);
 }
