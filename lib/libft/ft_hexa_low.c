@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_hexa_low.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/18 20:50:09 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/26 04:44:51 by ihama            ###   ########.fr       */
+/*   Created: 2023/04/17 13:14:47 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/02 19:37:47 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+int	ft_hexa_low(unsigned int n)
 {
-	unsigned char	*pointeur;
-	size_t			i;
+	char	*s;
+	char	l;
 
-	i = 0;
-	pointeur = (unsigned char *)b;
-	while (i < len)
-	{
-		*pointeur = (unsigned char)c;
-		i++;
-		pointeur++;
-	}
-	return (b);
+	s = "0123456789abcdef";
+	l = 0;
+	if (n > 15)
+		l += ft_hexa_low(n / 16);
+	l += ft_printchar(s[n % 16]);
+	return (l);
 }

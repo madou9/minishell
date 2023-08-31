@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/09 20:47:57 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/27 14:05:08 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/31 14:48:29 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **env)
 	t_redr		*glob;	
 	char		**temp;
 	char		check;
+	int tmpfd = dup(STDOUT_FILENO);
 	(void) argc;
 	(void) argv;
 
@@ -38,6 +39,8 @@ int	main(int argc, char **argv, char **env)
 		}
 		free(message);
 		free(temp);
+		dup2(tmpfd, STDOUT_FILENO);
+
 	}
 	return (0);
 }

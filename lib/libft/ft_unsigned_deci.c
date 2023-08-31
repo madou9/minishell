@@ -1,29 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_unsigned_deci.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/18 20:50:09 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/26 04:44:51 by ihama            ###   ########.fr       */
+/*   Created: 2023/04/17 01:20:30 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/02 19:38:15 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+int	ft_unsigned_deci(unsigned int c)
 {
-	unsigned char	*pointeur;
-	size_t			i;
+	int	l;
 
-	i = 0;
-	pointeur = (unsigned char *)b;
-	while (i < len)
-	{
-		*pointeur = (unsigned char)c;
-		i++;
-		pointeur++;
-	}
-	return (b);
+	l = 0;
+	if (c > 9)
+		l += ft_unsigned_deci(c / 10);
+	l += ft_printchar((c % 10) + '0');
+	return (l);
 }

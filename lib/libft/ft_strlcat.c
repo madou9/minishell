@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/21 21:08:22 by voszadcs          #+#    #+#             */
-/*   Updated: 2022/11/15 05:26:31 by voszadcs         ###   ########.fr       */
+/*   Created: 2023/03/21 19:06:40 by ihama             #+#    #+#             */
+/*   Updated: 2023/03/26 04:45:14 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,25 @@
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
+	size_t	dstlen;
+	size_t	srclen;
+	size_t	total;
 	size_t	i;
-	size_t	k;
 
+	dstlen = ft_strlen(dst);
+	srclen = ft_strlen(src);
+	total = dstlen + srclen;
 	i = 0;
-	k = 0;
-	if (dst)
-		i = ft_strlen(dst);
-	if (dstsize <= i)
-		return (dstsize + ft_strlen(src));
-	while (src[k] && k < dstsize - i - 1)
+	if (dstsize <= dstlen)
 	{
-		dst[i + k] = src[k];
-		k++;
+		return (dstsize + srclen);
 	}
-	dst[i + k] = '\0';
-	return (i + ft_strlen(src));
+	while (src[i] != '\0' && dstlen + 1 < dstsize)
+	{
+		dst[dstlen] = src[i];
+		dstlen++;
+		i++;
+	}
+	dst[dstlen] = '\0';
+	return (total);
 }

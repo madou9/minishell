@@ -6,35 +6,11 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:40:25 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/27 22:26:51 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/30 19:08:26 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
-
-void	update_environment(t_redr *direction, char *new_var)
-{
-	int		env_count;
-	int		i;
-	char	**new_env;
-
-	env_count = 0;
-	while (direction->env[env_count] != NULL)
-		env_count++;
-	new_env = ft_calloc(sizeof(char *), (env_count + 2));
-	if (!new_env)
-		return ;
-	i = 0;
-	while (i < env_count)
-	{
-		new_env[i] = direction->env[i];
-		i++;
-	}
-	new_env[env_count] = new_var;
-	new_env[env_count + 1] = NULL;
-	free(direction->env);
-	direction->env = new_env;
-}
 
 bool	update_or_add_variable(t_redr *envpp, char *new_var)
 {
@@ -52,7 +28,8 @@ bool	update_or_add_variable(t_redr *envpp, char *new_var)
 		{
 			if (strncmp(envpp->env[j], new_var, value - new_var) == 0)
 			{
-				envpp->env[j] = new_var;
+				free(envpp->env[j]);
+				envpp->env[j] = ft_strdup(new_var);
 				updated_value = true;
 			}
 			j++;
@@ -63,32 +40,26 @@ bool	update_or_add_variable(t_redr *envpp, char *new_var)
 	return (false);
 }
 
-bool	is_export_valid(char *valu)
+void	export_variable(char **args, t_redr *envpp)
 {
-	int	i;
+	char	*equal_sign;
+	char	*var_name;
 
-	i = 0;
-	if (!ft_isalpha_cha(*valu) && *valu != '_')
-		printf("export: %c: not a valid identifier\n", valu[i]);
-	while (valu[i])
+	var_name = *args;
+	if (!ft_isalpha_cha(var_name[0]) && var_name[0] != '_')
 	{
-		if (valu[i] == '=' || (valu[i] == '+' && valu[i + 1] == '='))
-			return (true);
-		i++;
+		printf("export: %c: not a valid identifier\n", var_name[0]);
+		return ;
 	}
-	return (false);
-}
-
-void	update_export(char **args, t_redr *envpp)
-{
-	int	i;
-
-	i = 0;
-	while (args[i] != NULL)
+	equal_sign = ft_strchr(var_name, '=');
+	printf("equal_sign : %s\n", equal_sign);
+	printf("var_name : %s\n", var_name);
+	if (equal_sign != NULL)
+		update_or_add_variable(envpp, var_name);
+	else
 	{
-		if (is_export_valid(args[i]))
-			update_or_add_variable(envpp, args[i]);
-		i++;
+		if (ft_strcmp(var_name, "=") > 0)
+			update_environment(envpp, var_name);
 	}
 }
 
@@ -100,7 +71,7 @@ void	print_export(t_redr *direction)
 
 	env = direction->env;
 	i = 0;
-	while (env[i] != NULL && ft_strchr(env[i], '='))
+	while (env[i] != NULL)
 	{
 		ft_putstr_fd("declare -x ", STDOUT_FILENO);
 		j = 0;
@@ -121,7 +92,7 @@ int	execute_export(char **args, t_redr *direction)
 	else
 	{
 		if (args[1] != NULL)
-			update_export(args, direction);
+			export_variable(&args[1], direction);
 	}
 	return (EXIT_SUCCESS);
 }

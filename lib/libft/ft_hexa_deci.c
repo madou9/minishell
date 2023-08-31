@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_hexa_deci.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/18 20:50:09 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/26 04:44:51 by ihama            ###   ########.fr       */
+/*   Created: 2023/04/16 21:31:57 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/02 19:37:41 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+int	ft_hexa_deci(int n)
 {
-	unsigned char	*pointeur;
-	size_t			i;
+	int	l;
 
-	i = 0;
-	pointeur = (unsigned char *)b;
-	while (i < len)
+	l = 0;
+	if (n == -2147483648)
 	{
-		*pointeur = (unsigned char)c;
-		i++;
-		pointeur++;
+		l += ft_putstr("-2147483648");
+		return (l);
 	}
-	return (b);
+	if (n < 0)
+	{
+		l += ft_printchar('-');
+		n = n * -1;
+	}
+	if (n > 9)
+		l += ft_hexa_deci(n / 10);
+	l += ft_printchar((n % 10) + '0');
+	return (l);
 }

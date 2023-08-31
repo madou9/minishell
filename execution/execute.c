@@ -6,13 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:34:06 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/24 16:30:43 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/30 19:21:49 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void execute_cmd(char **args, t_redr *envpp)
-{
-    if (is_builtin(args[0]))
-        execute_builtins(args, envpp);
-    else
-}

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/17 22:24:39 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/20 16:18:39 by ihama            ###   ########.fr       */
+/*   Created: 2023/03/17 01:59:05 by ihama             #+#    #+#             */
+/*   Updated: 2023/03/26 04:45:40 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,10 @@
 
 size_t	ft_strlen(const char *s)
 {
-	size_t	i;
-	char	*str;
+	int	a;
 
-	str = (char *)s;
-	i = 0;
-	while (str[i] != '\0' )
-	{
-		i++;
-	}
-	return (i);
+	a = 0;
+	while (s[a] != '\0')
+		a++;
+	return (a);
 }

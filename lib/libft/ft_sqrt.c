@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_sqrt.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/18 20:50:09 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/26 04:44:51 by ihama            ###   ########.fr       */
+/*   Created: 2023/03/26 05:11:06 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/14 20:39:00 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+int	ft_sqrt(int nb)
 {
-	unsigned char	*pointeur;
-	size_t			i;
+	int			min_threshold;
+	int			approximation;
+	int			previous;
 
-	i = 0;
-	pointeur = (unsigned char *)b;
-	while (i < len)
+	min_threshold = 4;
+	if (nb < 0)
+		return (0);
+	if (nb < min_threshold)
+		return (1);
+	approximation = nb / 2;
+	previous = approximation + 1;
+	while (previous - approximation > 1 || approximation * approximation > nb)
 	{
-		*pointeur = (unsigned char)c;
-		i++;
-		pointeur++;
+		previous = approximation;
+		approximation = (previous + nb / previous) / 2;
 	}
-	return (b);
+	return (approximation);
 }

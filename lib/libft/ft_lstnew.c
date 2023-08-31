@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/06 14:38:26 by voszadcs          #+#    #+#             */
-/*   Updated: 2022/11/15 05:22:51 by voszadcs         ###   ########.fr       */
+/*   Created: 2023/04/02 16:28:11 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/14 16:31:42 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(void *content)
+t_data	*ft_lstnew(void *content)
 {
-	t_list	*node;
+	t_data	*maillon;
 
-	node = (t_list *)malloc(sizeof(t_list));
-	if (!node)
-		return (0);
-	node->content = content;
-	node->next = NULL;
-	return (node);
+	maillon = malloc(sizeof(t_data));
+	if (!(maillon))
+		return (NULL);
+	maillon->content = content;
+	maillon->next = NULL;
+	return (maillon);
 }

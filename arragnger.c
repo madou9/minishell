@@ -1,57 +1,44 @@
-bool	is_export_valid(char *valu)
+void	handle_cmd(char **args, t_redr *envpp)
 {
 	int	i;
 
 	i = 0;
-	if (!ft_isalpha_cha(*valu))
-		return (false);
-	while (valu[i])
+	while (args[i] != NULL)
 	{
-		if (valu[i] == '=' || (valu[i] == '+' && valu[i + 1] == '='))
-			return (true);
+		if (check_redirection(&args[i + 2]))
+			return ;
+		else if (is_builtin(args[0]))
+			execute_builtins(&args[0], envpp);
+		else if (args[i][0])
+			execute_external(*args, envpp->env);
 		i++;
 	}
-	return (false);
 }
 
-bool	is_token_valid_export(char *args)
+void	execute_external(char *args, char **envpp)
 {
-	if (is_export_valid(args))
+	char	*cmd_path;
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == -1)
+		printf("fork error");
+	else if (pid == 0)
 	{
-		ft_putstr_fd("export not a valid identifier ", STDERR_FILENO);
-		ft_putstr_fd(args, STDERR_FILENO);
-		ft_putstr_fd("\n", STDERR_FILENO);
-		return (false);
-	}
-	return (true);
+		cmd_path = get_path_cmd(args, envpp);
+		if (!cmd_path)
+		{
+			perror("Error: path not found\n");
+			exit(EXIT_FAILURE);
+		}
+		execve(cmd_path, &args, envpp);
+	}	
+	waitpid(pid, &status, 0);
 }
 
-int execute_export(char **args, t_redr *direction)
-{
-    int i;
-    char **env;
 
-    i = 0;
-	env = direction->env;
-	if (args[1] != NULL)
-		update_export(args, direction);
-    while (env[i] != NULL)
-    {
-        if (ft_strchr(env[i], '='))
-        {
-            ft_putstr_fd("declare -x ", STDOUT_FILENO);
-            // Print variable name until '='
-            int j = 0;
-            while (env[i][j] != '=')
-            {
-                ft_putchar_fd(env[i][j], STDOUT_FILENO);
-                j++;
-            }
-            // Print variable value enclosed in double quotes
-            printf("=\"%s\"\n", &env[i][j + 1]);
-        }
-        i++;
-		update_export(args, direction);
-    }
-    return (EXIT_SUCCESS);
-}
+// execve("fullpath", ["echo", ">", "file", NULL], env);
+
+// execve("/bin/cat", ["cat", NULL, "file", NULL], env);
+

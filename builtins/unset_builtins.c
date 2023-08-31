@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:39:47 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/23 11:48:46 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/30 18:47:34 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ bool	remove_variable(char **envpp, const char *var)
 	i = 0;
 	while (envpp[i] != NULL)
 	{
-		if (strncmp(envpp[i], var, ft_strlen(var)) == 0)
+		if (ft_strncmp(envpp[i], var, ft_strlen(var)) == 0)
 		{
 			j = i;
 			// Remove this variable by shifting the array
@@ -56,15 +56,26 @@ bool	remove_variable(char **envpp, const char *var)
 	return (false);
 }
 
+int	is_token_valid_unset(char *token)
+{
+	return (ft_strchr(token, '=')
+		|| ft_strchr(token, '$')
+		|| ft_strchr(token, '"')
+		|| ft_strchr(token, '/')
+		|| ft_isdigit(*token));
+}
+
 int	execute_unset(char **args, t_redr *envpp)
 {
-	int i;
+	int	i;
 
-	i = 1; // Start from index 1 to skip the command name "unset"
+	i = 1;
 	while (args[i] != NULL)
 	{
-		if (!remove_variable(envpp->env, args[i]))
-			fprintf(stderr, "Error: Variable %s not found.\n", args[i]);
+		if (is_token_valid_unset(args[i]))
+			ft_printf("Error:unset %s is not valid identify.\n", args[i]);
+		else if (!remove_variable(envpp->env, args[i]))
+			ft_printf("Error: Variable %s not found.\n", args[i]);
 		i++;
 	}
 	return (EXIT_SUCCESS);

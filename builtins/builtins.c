@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:26 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/27 14:12:33 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/31 14:09:39 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,14 @@ void	execute_external(char **args, t_redr *envpp)
 {
 	char	*cmd_path;
 	pid_t	pid;
-	//int		status;
+	int		status;
 
 	pid = fork();
 	if (pid == -1)
 		printf("fork error");
 	else if (pid == 0)
 	{
-		cmd_path = get_path_cmd(*args, envpp->env);
+		cmd_path = get_path_cmd(args[0], envpp->env);
 		if (!cmd_path)
 		{
 			perror("Error: path not found\n");
@@ -88,5 +88,5 @@ void	execute_external(char **args, t_redr *envpp)
 		}
 		execve(cmd_path, args, envpp->env);
 	}	
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
 }

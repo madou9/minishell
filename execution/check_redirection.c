@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/12 19:31:11 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/27 14:25:14 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/31 14:55:34 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	input_redirection(char *infile)
 	int	fd;
 
 	fd = open(infile, O_RDONLY, 0777);
-	free(infile);
 	if (fd == -1)
 	{
 		ft_putstr_fd("Error: failed to open input file\n", STDERR_FILENO);
@@ -33,40 +32,53 @@ int	input_redirection(char *infile)
 	return (EXIT_SUCCESS);
 }
 
-int	output_redirection_append(char **args)
+int	output_redirection_append(char *outfile)
 {
-	int	fd;
-	int	i;
+	int	output_fd;
 
-	fd = -2;
-	i = 0;
-	if (ft_strcmp(args[i], ">") == 0)
-		fd = open(args[i + 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	else if (ft_strcmp(args[i], ">>") == 0)
-		fd = open(args[i + 1], O_WRONLY | O_APPEND | O_CREAT, 0644);
-	if (fd == -1)
-		ft_putstr_fd("Error: failed to open output file\n", STDERR_FILENO);
-	return (fd);
-}
-
-int	output_redirection(char **outfile)
-{
-	int	fd;
-
-	fd = output_redirection_append(outfile);
-	if (fd == -1)
+	output_fd = open(outfile, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	if (output_fd == -1)
+		perror("Error: failed to open output file");
+	if (dup2(output_fd, STDOUT_FILENO) == -1)
 	{
-		ft_putstr_fd("Error: failed to open output file\n", STDERR_FILENO);
+		ft_putstr_fd("Error:dup2 for input redirection failed\n", STDERR_FILENO);
+		close(output_fd);
 		return (EXIT_FAILURE);
 	}
-	if (dup2(fd, STDOUT_FILENO) == -1)
-	{
-		ft_putstr_fd("Error:dup2 for output redirection failed\n", STDERR_FILENO);
-		close(fd);
-		exit (EXIT_FAILURE);
-	}
-	close(fd);
+	close(output_fd);
 	return (EXIT_SUCCESS);
+}
+
+int	output_redirection_truncate(char *outfile)
+{
+	int	input_fd;
+
+	input_fd = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (input_fd == -1)
+		perror("Error: failed to open output file");
+	if (dup2(input_fd, STDOUT_FILENO) == -1)
+	{
+		ft_putstr_fd("Error:dup2 for input redirection failed\n", STDERR_FILENO);
+		close(input_fd);
+		return (EXIT_FAILURE);
+	}
+	close(input_fd);
+	return (EXIT_SUCCESS);
+}
+
+int	output_redirection(char **args)
+{
+	int	i;
+
+	i = 0;
+	if (args[i] != NULL)
+	{
+		if (ft_strcmp(args[i], ">") == 0)
+			return (output_redirection_truncate(args[i + 1]));
+		else if (ft_strcmp(args[i], ">>") == 0)
+			return (output_redirection_append(args[i + 1]));
+	}
+	return (-1);
 }
 
 int	check_redirection(char **args)
@@ -86,7 +98,10 @@ int	check_redirection(char **args)
 			|| ft_strcmp(args[i], ">>") == 0)
 		{
 			if (output_redirection(&args[i]))
+			{
 				return (EXIT_FAILURE);
+			}
+			args[i] = NULL;
 			i += 2;
 		}
 		else

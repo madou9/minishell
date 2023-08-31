@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/28 04:48:12 by voszadcs          #+#    #+#             */
-/*   Updated: 2022/11/15 05:13:54 by voszadcs         ###   ########.fr       */
+/*   Created: 2023/03/29 07:36:52 by ihama             #+#    #+#             */
+/*   Updated: 2023/04/04 00:36:21 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,26 @@
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char			*buffer;
-	unsigned int	i;
+	size_t	i;
+	size_t	n;
+	char	*x;
 
 	i = 0;
-	if (!s)
+	n = ft_strlen(s);
+	if (s == NULL)
 		return (NULL);
-	if (start > ft_strlen(s))
-		return (ft_strdup(""));
-	if (len > ft_strlen(s))
-		len = ft_strlen(s);
-	buffer = malloc(sizeof(char) * (len + 1));
-	if (!buffer)
-		return (0);
-	while (i < len && s[start] != '\0')
+	if (start > n)
+		start = n;
+	if (len > n - start)
+		len = n - start;
+	x = malloc(sizeof(char) * (len + 1));
+	if (!x)
+		return (NULL);
+	while (i < len)
 	{
-		buffer[i] = s[start];
+		x[i] = s[start + i];
 		i++;
-		start++;
 	}
-	buffer[i] = '\0';
-	return (buffer);
+	x[i] = '\0';
+	return (x);
 }

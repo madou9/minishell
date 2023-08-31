@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/18 20:50:09 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/26 04:44:51 by ihama            ###   ########.fr       */
+/*   Created: 2023/04/16 16:38:37 by ihama             #+#    #+#             */
+/*   Updated: 2023/08/02 19:38:03 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+int	ft_putstr(char *str)
 {
-	unsigned char	*pointeur;
-	size_t			i;
+	int	i;
 
 	i = 0;
-	pointeur = (unsigned char *)b;
-	while (i < len)
+	if (!str)
 	{
-		*pointeur = (unsigned char)c;
-		i++;
-		pointeur++;
+		write(1, "(null)", 6);
+		return (6);
 	}
-	return (b);
+	while (str[i])
+	{
+		write(1, &str[i], 1);
+		i++;
+	}
+	return (i);
 }

@@ -1,5 +1,0 @@
-AddressSanitizer:DEADLYSIGNAL
-=================================================================
-==17820==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x000105bc4764 bp 0x7ffeea0776f0 sp 0x7ffeea077680 T0)
-==17820==The signal is caused by a READ memory access.
-==17820==Hint: address points to the zero page.

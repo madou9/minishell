@@ -6,11 +6,26 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/17 17:01:04 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/22 15:28:21 by ihama            ###   ########.fr       */
+/*   Updated: 2023/08/30 16:38:47 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
+
+int	ft_exit_number(char *str)
+{
+	if (!str)
+		return (0);
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str)
+	{
+		if (!ft_isdigit(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
 
 int	execute_exit(char **args)
 {
@@ -21,7 +36,11 @@ int	execute_exit(char **args)
 		ft_putstr_fd("exit\n", STDERR_FILENO);
 	if (args[1] && args[2])
 		ft_putstr_fd("Error: Too many argument\n", STDERR_FILENO);
-	if (args[0])
-		exit_code = ft_atoi(args[0]);
+	if (!ft_exit_number(args[1]))
+	{
+		ft_putstr_fd("Error: Numerique argument required \n", STDERR_FILENO);
+		return (false);
+	}
+	exit_code = ft_atoi(*args);
 	exit(exit_code);
 }
