@@ -1,57 +1,3 @@
-void	handle_cmd(char **args, t_redr *envpp)
-{
-	int	i;
-
-	i = 0;
-	while (args[i] != NULL)
-	{
-		if (check_redirection(&args[i + 2]))
-			return ;
-		else if (is_builtin(args[0]))
-			execute_builtins(&args[0], envpp);
-		else if (args[i][0])
-			execute_external(*args, envpp->env);
-		i++;
-	}
-}
-
-void	execute_external(char *args, char **envpp)
-{
-	char	*cmd_path;
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == -1)
-		printf("fork error");
-	else if (pid == 0)
-	{
-		cmd_path = get_path_cmd(args, envpp);
-		if (!cmd_path)
-		{
-			perror("Error: path not found\n");
-			exit(EXIT_FAILURE);
-		}
-		execve(cmd_path, &args, envpp);
-	}	
-	waitpid(pid, &status, 0);
-}
-
-void export_variable(char **args, t_redr *envpp)
-{
-	char	*equal_sign;
-	bool	valid_identifier;
-	char	*var_name;
-	int		i;
-	int		j;
-
-	i = 0;
-	while (args[i] != NULL)
-	{
-		var_name = args
-	}
-}
-
 // void export_variable(char **args, t_redr *envpp) {
 //     int i = 0;
 
@@ -82,8 +28,6 @@ void export_variable(char **args, t_redr *envpp)
 //         i++;
 //     }
 // }
-
-
 
 // void	export_variable(char **args, t_redr *envpp)
 // {

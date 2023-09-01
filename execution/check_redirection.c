@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/12 19:31:11 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/31 15:07:12 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/01 17:41:50 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 
 int	input_redirection(char *infile)
 {
-	int	fd;
+	int	input_fd;
 
-	fd = open(infile, O_RDONLY, 0777);
-	if (fd == -1)
+	input_fd = open(infile, O_RDONLY, 0777);
+	if (input_fd == -1)
 	{
 		ft_putstr_fd("Error: failed to open input file\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	if (dup2(fd, STDIN_FILENO) == -1)
+	if (dup2(input_fd, STDIN_FILENO) == -1)
 	{
 		ft_putstr_fd("Error:dup2 for input redirection failed\n", STDERR_FILENO);
-		close(fd);
+		close(input_fd);
 		return (EXIT_FAILURE);
 	}
-	close(fd);
+	close(input_fd);
 	return (EXIT_SUCCESS);
 }
 
@@ -52,6 +52,7 @@ int	output_redirection_append(char *outfile)
 int	output_redirection_truncate(char *outfile)
 {
 	int	input_fd;
+	// int tmpfd = dup(STDOUT_FILENO);
 
 	input_fd = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (input_fd == -1)
@@ -63,6 +64,7 @@ int	output_redirection_truncate(char *outfile)
 		return (EXIT_FAILURE);
 	}
 	close(input_fd);
+	// dup2(tmpfd, STDOUT_FILENO);
 	return (EXIT_SUCCESS);
 }
 
@@ -91,23 +93,22 @@ int	check_redirection(char **args)
 		if (ft_strcmp(args[i], "<") == 0 || ft_strcmp(args[i], "<<") == 0)
 		{
 			if (input_redirection(args[i + 1]))
-				return (EXIT_FAILURE);
+				return (0);
+			args[i] = NULL;
 			i += 2;
 		}
 		else if (ft_strcmp(args[i], ">") == 0
 			|| ft_strcmp(args[i], ">>") == 0)
 		{
 			if (output_redirection(&args[i]))
-			{
-				return (EXIT_FAILURE);
-			}
+				return (0);
 			args[i] = NULL;
 			i += 2;
 		}
 		else
 			i++;
 	}
-	return (EXIT_SUCCESS);
+	return (1);
 }
 
 // execve("fullpath", ["echo", ">", "file", NULL], env);

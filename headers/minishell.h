@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 03:58:45 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/30 22:02:12 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/01 17:16:10 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ char	**dup_env(char **env);
 void	update_environment(t_redr *direction, char *new_var);
 bool	update_or_add_variable(t_redr *envpp, char *new_var);
 int		execute_export(char **args, t_redr *direction);
+bool	is_valid_identifier(const char *name);
 void	print_export(t_redr *direction);
 //void	update_export(char **args, t_redr *envpp);
 int		execute_unset(char **args, t_redr *envpp);
@@ -95,7 +96,7 @@ int		output_redirection_truncate(char *outfile);
 int		output_redirection(char **outfile);
 int		check_redirection(char **args);
 void	export_variable(char **args, t_redr *envpp);
-
+void should_execute_command(char **args, t_redr *env);
 // void remove_redirection_symbols(char **args);
 // bool is_redirection_symbol(char *arg);
 #endif
