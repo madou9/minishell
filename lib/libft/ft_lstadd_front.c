@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/02 17:12:09 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/14 16:31:49 by ihama            ###   ########.fr       */
+/*   Created: 2022/11/07 00:53:56 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/11/15 04:31:00 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstadd_front(t_data **lst, t_data *new)
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	new->next = *lst;
-	*lst = new;
-	return ;
+	if (*lst && new)
+		new->next = *lst;
+		*lst = new;
 }

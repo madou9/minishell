@@ -3,29 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/22 16:29:11 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/27 04:42:57 by ihama            ###   ########.fr       */
+/*   Created: 2022/10/22 03:32:47 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/11/15 05:26:01 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
 char	*ft_strrchr(const char *s, int c)
 {
-	char	*last;
-	char	x;
+	int	i;
 
-	x = (char) c;
-	last = NULL;
-	while (*s != '\0')
+	i = 0;
+	while (s[i] != 0)
 	{
-		if (*s == x)
-			last = (char *)s;
-		s++;
+		i++;
 	}
-	if (x == '\0')
-		return ((char *)s);
-	return (last);
+	while ((i + 1) != 0)
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i--;
+	}
+	return (0);
 }

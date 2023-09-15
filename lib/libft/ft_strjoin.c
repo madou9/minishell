@@ -3,39 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/30 05:48:53 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/31 00:45:02 by ihama            ###   ########.fr       */
+/*   Created: 2022/10/28 06:27:33 by voszadcs          #+#    #+#             */
+/*   Updated: 2023/09/06 16:35:23 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
+#include <stdio.h>
+//Changed from original Libft ft_strjoin. Now if any string as parameter is NULL
+//function takes it as 0 length;
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	len;
-	size_t	i;
-	size_t	j;
-	char	*result;
+	char	*str;
+	int		i;
+	int		size1;
+	int		size2;
 
-	len = ft_strlen(s1) + ft_strlen(s2);
-	result = malloc(len + 1);
-	if (result == NULL)
+	if (s1 == NULL && s2 == NULL)
 		return (NULL);
+	if (s1 == NULL)
+		size1 = 0;
+	else
+		size1 = ft_strlen((char *)s1);
+	if (s2 == NULL)
+		size2 = 0;
+	else
+		size2 = ft_strlen((char *)s2);
 	i = 0;
-	while (s1[i] != '\0')
-	{
-		result[i] = s1[i];
-		i++;
-	}
-	j = 0;
-	while (s2[j] != '\0')
-	{
-		result[i] = s2[j];
-		i++;
-		j++;
-	}
-	result[i] = '\0';
-	return (result);
+	str = malloc(size1 + size2 + 1);
+	if (!str)
+		return (NULL);
+	while (s1 != NULL && *s1 != 0)
+		str[i++] = *(char *)s1++;
+	while (s2 != NULL && *s2 != 0)
+		str[i++] = *(char *)s2++;
+	str[i] = '\0';
+	return (str);
 }

@@ -3,90 +3,85 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/11 20:45:45 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/08/30 15:03:58 by ihama            ###   ########.fr       */
+/*   Created: 2023/09/07 16:15:45 by voszadcs          #+#    #+#             */
+/*   Updated: 2023/09/14 02:18:42 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// void	export_variable(char *var, t_redr *envpp)
-// {
-// 	char	*equal_sign;
-// 	char	*var_name;
+#include "../headers/minishell.h"
 
-// 	var_name = ft_strchr(var, '=');
-// 	if (var_name != NULL) {
-// 		// Handle export KEY=value case
-// 		update_or_add_variable(envpp, var);
-// 	} else {
-// 		// Handle export KEY case
-// 		// Print the environment variable if it exists
-// 		char *value = ft_getenv(envpp->env, var);
-// 		if (value != NULL) {
-// 			printf("declare -x %s=\"%s\"\n", var, value);
-// 		}
-// 	}
-// }
-
-// int	execute_export(char **args, t_redr *direction)
-// {
-// 	if (args[1] == NULL) {
-// 		// Print all exported variables
-// 		print_export(direction);
-// 	} else {
-// 		// Export variables as per arguments
-// 		for (int i = 1; args[i] != NULL; i++) {
-// 			export_variable(args[i], direction);
-// 		}
-// 	}
-// 	return (EXIT_SUCCESS);
-// }
-
-
-bool is_valid_variable_name(const char *token) {
-    if (!token || !*token || !isalpha((unsigned char)token[0]) && token[0] != '_') {
-        return false; // Token doesn't start with a letter or underscore
-    }
-    
-    for (const char *c = token + 1; *c; c++) {
-        if (!isalnum((unsigned char)*c) && *c != '_') {
-            return false; // Token contains characters other than letters, digits, and underscores
-        }
-    }
-    
-    return true;
-}
-
-int execute_unset(char **args, t_redr *envpp) {
-    for (int i = 1; args[i] != NULL; i++) {
-        if (!is_valid_variable_name(args[i])) {
-            fprintf(stderr, "unset: %s: invalid variable name\n", args[i]);
-        } else if (!remove_variable(envpp->env, args[i])) {
-            fprintf(stderr, "unset: %s: variable not found\n", args[i]);
-        }
-    }
-    return EXIT_SUCCESS;
-}
-
-int	is_token_valid_unset(char *token_str, char *err_message)
+void	parser_free(t_main *main)
 {
-	int		check;
+	t_mylist	*node;
+	t_mylist	*temp;
 
-	if (token_str == 0)
-		return (1);
-	if (ft_strchr(token_str, '=')
-		|| ft_strchr(token_str, '\'')
-		|| ft_strchr(token_str, '"')
-		|| ft_strchr(token_str, '$')
-		|| *token_str == '/'
-		|| ft_isdigit(*token_str))
+	node = main->list;
+	while (1)
 	{
-		check = 0;
-		ft_strcpy(err_message, "unset: `");
-		ft_strcat(err_message, token_str);
-		ft_strcat(err_message, "': not a valid identifier");
+		if (node->value)
+			free(node->value);
+		if (node)
+		{
+			temp = node->next;
+			free(node);
+		}
+		node = temp;
+		if (node == NULL)
+			break ;
+	}	
+}
+
+void	fix_types(t_main *main)
+{
+	t_mylist	*head;
+
+	head = main->list;
+	while (1)
+	{
+		if (head->type == LS || head->type == LSLS
+			|| head->type == GRT || head->type == GRTGRT)
+		{
+			if (head->next && (head->next->type == WRD
+					|| head->next->type == WRD_QUOTED))
+				head->next->type = WRD_REDIR;
+			else if (head->type == WRD_REDIR)
+				head->next->type = HEREDOC_QUOT;
+		}
+		else if (head->type == WRD || head->type == WRD_QUOTED)
+			head->type = WRD_CMD;
+		if (head->next == NULL)
+			break ;
+		head = head->next;
 	}
-	else
-		check = 1;
-	return (check);
+}
+
+void	init_data(t_main *main)
+{
+	int	count;
+	int	i;
+
+	count = count_procs(main->list);
+	i = 0;
+	main->data = malloc(sizeof(t_data) * count);
+	while (i < count)
+	{
+		main->data[i].fd[0] = 0;
+		main->data[i].fd[1] = 1;
+		main->data[i].index = i;
+		i++;
+	}
+	main->procs = count;
+	fix_types(main);
+}
+
+int	parser(t_main *main)
+{
+	init_data(main);
+	if (parse_redir(main) != 0)
+		return (parser_free(main), -1);
+	parse_command(main);
+	parser_free(main);
+	return (0);
+}

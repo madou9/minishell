@@ -3,20 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/18 22:15:16 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/31 04:09:40 by ihama            ###   ########.fr       */
+/*   Created: 2022/10/20 01:20:36 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/10/20 01:53:08 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-void	ft_bzero(void *s, size_t n)
+void	ft_bzero(void *s, int n)
 {
-	char	*o;
+	char	*a;
+	int		i;
 
-	o = s;
-	while (n--)
-		*o++ = 0;
+	a = (char *)s;
+	i = 0;
+	while (i < n)
+	{
+		a[i] = 0;
+		i++;
+	}
 }

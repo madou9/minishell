@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:39:47 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/30 18:47:34 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/14 23:57:25 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,26 @@ int	is_token_valid_unset(char *token)
 		|| ft_isdigit(*token));
 }
 
-int	execute_unset(char **args, t_redr *envpp)
+int	execute_unset(t_data *data, t_main *main)
 {
-	int	i;
+	int		i;
+	char	*error;
 
 	i = 1;
-	while (args[i] != NULL)
+	while (data->cmd[i] != NULL)
 	{
-		if (is_token_valid_unset(args[i]))
-			ft_printf("Error:unset %s is not valid identify.\n", args[i]);
-		else if (!remove_variable(envpp->env, args[i]))
-			ft_printf("Error: Variable %s not found.\n", args[i]);
+		if (!is_valid_identifier(data->cmd[i]))
+		{
+			error = ft_strjoin("Error:unset is not valid identify.\n", data->cmd[i]);
+			return (perror(error), free(error), -1);
+		}
+			// ft_printf("Error:unset %s is not valid identify.\n", data->cmd[i]);
+		else if (!remove_variable(main->env, data->cmd[i]))
+		{
+			error = ft_strjoin("Error: Variable %s not found.\n", data->cmd[i]);
+			return (perror(error), free(error), -1);
+		}
+		// ft_printf("Error: Variable %s not found.\n", data->cmd[i]);
 		i++;
 	}
 	return (EXIT_SUCCESS);

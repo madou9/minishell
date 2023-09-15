@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:38:54 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/30 14:45:06 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/14 18:34:51 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,19 @@ int	ft_repeat_str(char repeat, char *str, int start)
 	return (1);
 }
 
-int	execute_echo(char **args)
+int	execute_echo(t_data *data)
 {
 	bool	escape_newline;
 	int		i;
 
 	i = 1;
 	escape_newline = true;
-	while (args[i] && args[i][0] == '-' && ft_repeat_str('n', args[i], 1))
+	while (data->cmd[i] && data->cmd[i][0] == '-' && ft_repeat_str('n', data->cmd[i], 1))
 	{
 			escape_newline = false;
 			i++;
 	}
-	print_args(args + i);
+	print_args(data->cmd + i);
 	if (escape_newline)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 	return (EXIT_SUCCESS);

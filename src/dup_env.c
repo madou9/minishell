@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/19 17:22:23 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/27 20:46:47 by ihama            ###   ########.fr       */
+/*   Created: 2023/08/31 20:28:48 by voszadcs          #+#    #+#             */
+/*   Updated: 2023/09/14 19:01:34 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,23 @@
 
 char	**dup_env(char **env)
 {
-	char	**new_env;
+	char	**env_cpy;
 	int		i;
+	int		len;
 
 	i = 0;
-	while (env[i])
+	while (env[i] != NULL)
 		i++;
-	new_env = ft_calloc(sizeof(char *), (i + 1));
-	if (!new_env)
-		return (NULL);
+	env_cpy = malloc(sizeof(char *) * (i + 1));
 	i = 0;
-	while (env[i])
+	while (env[i] != NULL)
 	{
-		new_env[i] = ft_strdup(env[i]);
-		if (new_env[i] == NULL)
-		{
-			free(new_env);
-			return (new_env);
-		}
+		len = ft_strlen(env[i]);
+		env_cpy[i] = ft_substr(env[i], 0, len);
 		i++;
 	}
-	new_env[i] = NULL;
-	return (new_env);
+	env_cpy[i] = NULL;
+	return (env_cpy);
 }
 
 char	*ft_getenv(char **env, const char *name)

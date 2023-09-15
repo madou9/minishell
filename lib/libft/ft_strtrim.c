@@ -3,40 +3,90 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/31 04:16:38 by ihama             #+#    #+#             */
-/*   Updated: 2023/04/04 00:35:51 by ihama            ###   ########.fr       */
+/*   Created: 2022/10/30 02:10:36 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/11/15 05:25:53 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_isset(char const c, char const *set)
-{
-	while (*set)
+static int	ft_front(char *src, char *trim)
+{	
+	int	i;
+	int	k;
+	int	count;
+
+	i = 0;
+	k = 0;
+	count = 0;
+	while (src[i] != '\0')
 	{
-		if (c == *set)
-			return (1);
-		set++;
+		if (trim[k] == src[i])
+		{
+			count++;
+			i++;
+			k = 0;
+		}
+		else if (trim[k] != src[i] && trim[k] != '\0')
+			k++;
+		else if (trim[k] == '\0')
+			break ;
 	}
-	return (0);
+	return (count);
+}
+
+static int	ft_back(char *src, char *trim)
+{
+	int	i;
+	int	k;
+	int	count;
+
+	k = 0;
+	count = 0;
+	i = ft_strlen(src) - 1;
+	while (i >= 0)
+	{
+		if (trim[k] == src[i])
+		{
+			count++;
+			i--;
+			k = 0;
+		}
+		else if (trim[k] != src[i] && trim[k] != '\0')
+			k++;
+		else if (trim[k] == '\0')
+			break ;
+	}
+	return (count);
 }
 
 char	*ft_strtrim(char const *s1, char const *set)
 {
-	char const	*start;
-	char const	*end;
-	char		*trim;
+	char	*buffer;
+	int		i;
+	int		len;
+	size_t	count1;
+	size_t	count2;
 
-	if (!s1 || !set)
+	if (!s1)
 		return (NULL);
-	start = s1;
-	while (*start && ft_isset(*start, set))
-		start++;
-	end = s1 + ft_strlen(s1) -1;
-	while (end > start && ft_isset(*end, set))
-		end--;
-	trim = ft_substr(start, 0, end - start + 1);
-	return (trim);
+	count1 = ft_front((char *)s1, (char *)set);
+	count2 = ft_back((char *)s1, (char *)set);
+	if (count1 == ft_strlen((char *)s1))
+		count2 = 0;
+	len = ft_strlen((char *)s1) - (count1 + count2);
+	buffer = malloc(len + 1);
+	if (!buffer)
+		return (NULL);
+	ft_bzero(buffer, len + 1);
+	i = 0;
+	while (i < len)
+	{
+		buffer[i] = s1[count1];
+		count1++;
+		i++;
+	}
+	return (buffer);
 }

@@ -6,13 +6,13 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:40:25 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/01 15:41:38 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/14 23:57:05 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
-bool	update_or_add_variable(t_redr *envpp, char *new_var)
+bool	update_or_add_variable(t_main *main, char *new_var)
 {
 	char	*value;
 	int		j;
@@ -24,37 +24,21 @@ bool	update_or_add_variable(t_redr *envpp, char *new_var)
 		value++;
 		updated_value = false;
 		j = 0;
-		while (envpp->env[j] != NULL)
+		while (main->env[j] != NULL)
 		{
-			if (strncmp(envpp->env[j], new_var, value - new_var) == 0)
+			if (ft_strncmp(main->env[j], new_var, value - new_var) == 0)
 			{
-				free(envpp->env[j]);
-				envpp->env[j] = ft_strdup(new_var);
+				free(main->env[j]);
+				main->env[j] = ft_strdup(new_var);
 				updated_value = true;
 			}
 			j++;
 		}
 		if (!updated_value)
-			update_environment(envpp, new_var);
+			update_environment(main, new_var);
 	}
 	return (false);
 }
-
-// bool	is_export_valid(char *valu)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	if (!ft_isalpha_cha(*valu) && *valu != '_')
-// 		printf("export: %c: not a valid identifier\n", valu[i]);
-// 	while (valu[i])
-// 	{
-// 		if (valu[i] == '=' || (valu[i] == '+' && valu[i + 1] == '='))
-// 			return (true);
-// 		i++;
-// 	}
-// 	return (false);
-// }
 
 bool	is_valid_identifier(const char *name)
 {
@@ -70,7 +54,7 @@ bool	is_valid_identifier(const char *name)
 	return (true);
 }
 
-void	export_variable(char **args, t_redr *envpp)
+void	export_variable(char **args, t_main *main)
 {
 	int		i;
 	char	*var_name;
@@ -81,54 +65,56 @@ void	export_variable(char **args, t_redr *envpp)
 	{
 		var_name = args[i];
 		equal_sign = ft_strchr(var_name, '=');
-		if (equal_sign == var_name)
+		if (ft_strncmp(var_name, "_=", 2) == 0)
+			return ;
+		if (!is_valid_identifier(var_name) || equal_sign == var_name)
 		{
-			printf("export: %s: not a valid identifier\n", var_name);
+			printf("Error: %s: not a valid identifier\n", var_name);
 			return ;
 		}
-		if (!is_valid_identifier(var_name))
-		{
-			printf("export: %s: not a valid identifier\n", var_name);
-			return ;
-		}
-		if (equal_sign != NULL)
-			update_or_add_variable(envpp, var_name);
+		if (equal_sign)
+			update_or_add_variable(main, var_name);
 		else
-			update_environment(envpp, var_name);
+			update_environment(main, var_name);
 		i++;
 	}
 }
 
-void	print_export(t_redr *direction)
+void	print_export(t_main *main)
 {
 	char	**env;
 	int		i;
 	int		j;
 
-	env = direction->env;
+	env = main->env;
 	i = 0;
 	while (env[i] != NULL)
 	{
-		ft_putstr_fd("declare -x ", STDOUT_FILENO);
-		j = 0;
-		while (env[i][j] != '=')
+		if (ft_strncmp(env[i], "_=", 2) != 0)
 		{
-			ft_putchar_fd(env[i][j], STDOUT_FILENO);
-			j++;
+			ft_putstr_fd("declare -x ", STDOUT_FILENO);
+			j = 0;
+			while (env[i][j] != '=' && env[i][j] != '\0')
+			{
+				ft_putchar_fd(env[i][j], STDOUT_FILENO);
+				j++;
+			}
+			if (env[i][j] != '\0')
+				printf("=\"%s\"\n", &env[i][j + 1]);
+			else
+				printf("%s\n", &env[i][j]);
 		}
-		printf("=\"%s\"\n", &env[i][j + 1]);
 		i++;
 	}
 }
 
-int	execute_export(char **args, t_redr *direction)
+void	execute_export(t_data *data, t_main *main)
 {
-	if (args[1] == NULL)
-		print_export(direction);
+	if (data->cmd[1] == NULL)
+		print_export(main);
 	else
 	{
-		if (args[1] != NULL)
-			export_variable(&args[1], direction);
+		if (data->cmd[1] != NULL)
+			export_variable(&data->cmd[1], main);
 	}
-	return (EXIT_SUCCESS);
 }

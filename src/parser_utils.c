@@ -1,19 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printchar.c                                     :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/16 16:41:25 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/02 19:37:53 by ihama            ###   ########.fr       */
+/*   Created: 2023/09/07 18:34:21 by voszadcs          #+#    #+#             */
+/*   Updated: 2023/09/13 20:21:44 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../headers/minishell.h"
 
-int	ft_printchar(int c)
+int	count_procs(t_mylist *list)
 {
-	write(1, &c, 1);
-	return (1);
+	t_mylist	*head;
+	int			i;
+
+	i = 0;
+	head = list;
+	while (1)
+	{
+		if (head->type == PIPE)
+			i++;
+		if (!head->next)
+			break ;
+		head = head->next;
+	}
+	return (++i);
 }

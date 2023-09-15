@@ -3,33 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/03 06:23:07 by ihama             #+#    #+#             */
-/*   Updated: 2023/08/14 16:34:03 by ihama            ###   ########.fr       */
+/*   Created: 2022/11/08 02:20:09 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/11/15 04:32:01 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_data	*ft_lstmap(t_data *lst, void *(*f)(void *), void (*del)(void *))
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_data	*new_list;
-	t_data	*new_elem;
+	t_list	*new;
+	t_list	*head;
 
-	if (!lst || !f)
+	if (!lst || !f || !del)
 		return (NULL);
-	new_list = NULL;
+	new = ft_lstnew((*f)(lst->content));
+	if (!new)
+		return (NULL);
+	head = new;
+	lst = lst->next;
 	while (lst)
 	{
-		new_elem = ft_lstnew(f(lst->content));
-		if (!new_elem)
+		new->next = ft_lstnew((*f)(lst->content));
+		if (new->next == NULL)
 		{
-			ft_lstclear(&new_list, del);
+			ft_lstclear(&head, *del);
 			return (NULL);
 		}
-		ft_lstadd_back(&new_list, new_elem);
 		lst = lst->next;
+		new = new->next;
 	}
-	return (new_list);
+	return (head);
 }

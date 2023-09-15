@@ -6,28 +6,28 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:26 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/01 16:38:58 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/14 23:56:10 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
-void	execute_builtins(char **args, t_redr *envpp)
+void	execute_builtins(t_data *data, t_main *main)
 {
-	if (!ft_strcmp(args[0], "echo"))
-		execute_echo(args);
-	else if (!ft_strcmp(args[0], "exit"))
-		execute_exit(args);
-	else if (!ft_strcmp(args[0], "pwd"))
-		execute_pwd(args);
-	else if (!ft_strcmp(args[0], "env"))
-		execute_env(envpp);
-	else if (!ft_strcmp(args[0], "export"))
-		execute_export(args, envpp);
-	else if (!ft_strcmp(args[0], "unset"))
-		execute_unset(args, envpp);
-	else if (!ft_strcmp(args[0], "cd"))
-		execute_cd(args, envpp);
+	if (!ft_strcmp(data->cmd[0], "echo"))
+		execute_echo(data);
+	else if (!ft_strcmp(data->cmd[0], "exit"))
+		execute_exit(data);
+	else if (!ft_strcmp(data->cmd[0], "pwd"))
+		execute_pwd(data->cmd);
+	else if (!ft_strcmp(data->cmd[0], "env"))
+		execute_env(main);
+	else if (!ft_strcmp(data->cmd[0], "export"))
+		execute_export(data, main);
+	else if (!ft_strcmp(data->cmd[0], "unset"))
+		execute_unset(data, main);
+	else if (!ft_strcmp(data->cmd[0], "cd"))
+		execute_cd(data, main);
 }
 
 int	is_builtin(const char *command)
@@ -69,24 +69,25 @@ char	*get_path_cmd(char *cmd, char **env)
 	return (cmd_path);
 }
 
-void	execute_external(char **args, t_redr *envpp)
+int	execute_external(t_data *data, t_main *main)
 {
 	char	*cmd_path;
 	pid_t	pid;
 	int		status;
+	char	*error;
 
 	pid = fork();
 	if (pid == -1)
 		printf("fork error");
 	else if (pid == 0)
 	{
-		cmd_path = get_path_cmd(args[0], envpp->env);
-		if (!cmd_path)
+		cmd_path = get_path_cmd(data->cmd[0], main->env);
+		if (execve(cmd_path, data->cmd, main->env) == - 1)
 		{
-			perror("Error: path not found\n");
-			exit(EXIT_FAILURE);
+			error = ft_strjoin("minishell: ", cmd_path);
+			return (perror(error), free(error), -1);
 		}
-		execve(cmd_path, args, envpp->env);
-	}	
+	}
 	waitpid(pid, &status, 0);
+	return (0);
 }

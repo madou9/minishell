@@ -3,50 +3,67 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/01 08:35:22 by ihama             #+#    #+#             */
-/*   Updated: 2023/04/01 11:35:02 by ihama            ###   ########.fr       */
+/*   Created: 2022/11/03 17:31:10 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/11/13 23:13:34 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int	digit_count(int n)
+static int	itoa_len(long int n, int i)
 {
-	int	digit;
-
-	digit = !n;
-	while (n)
+	if (n < 0)
+	{
+		i++;
+		n *= -1;
+	}
+	while (n >= 10)
 	{
 		n /= 10;
-		digit++;
+		i++;
 	}
-	return (digit);
+	return (i);
+}
+
+static char	*fill(long int num, int i, char *buff, int len)
+{
+	if (num < 0)
+	{
+		num = num * -1;
+		buff[0] = '-';
+		while (i > 0)
+		{
+			buff[i] = num % 10 + '0';
+			num = num / 10;
+			i--;
+		}
+		buff[len] = '\0';
+		return (buff);
+	}
+	while (i >= 0)
+	{
+		buff[i] = num % 10 + '0';
+		num = num / 10;
+		i--;
+	}
+	buff[len] = '\0';
+	return (buff);
 }
 
 char	*ft_itoa(int n)
 {
-	bool	sign;
-	int		d_count;
-	char	*result;
+	char		*buff;
+	long int	num;
+	int			len;
+	int			i;
 
-	sign = n < 0;
-	d_count = digit_count(n) + sign;
-	result = (char *)malloc(sizeof(char) * (d_count + 1));
-	if (!result)
+	num = (long int)n;
+	len = itoa_len(num, 1);
+	i = len -1;
+	buff = malloc(len + 1);
+	if (!buff)
 		return (NULL);
-	result[d_count] = 0;
-	if (sign)
-	{
-		*result = '-';
-		result[--d_count] = -(n % 10) + '0';
-		n = -(n / 10);
-	}
-	while (d_count-- - sign)
-	{
-		result[d_count] = n % 10 + '0';
-		n /= 10;
-	}
-	return (result);
+	return (fill(num, i, buff, len));
 }

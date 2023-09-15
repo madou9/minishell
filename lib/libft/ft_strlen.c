@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/17 01:59:05 by ihama             #+#    #+#             */
-/*   Updated: 2023/03/26 04:45:40 by ihama            ###   ########.fr       */
+/*   Created: 2022/10/17 22:24:39 by voszadcs          #+#    #+#             */
+/*   Updated: 2022/11/09 22:48:04 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,14 @@
 
 size_t	ft_strlen(const char *s)
 {
-	int	a;
+	size_t	i;
+	char	*str;
 
-	a = 0;
-	while (s[a] != '\0')
-		a++;
-	return (a);
+	str = (char *)s;
+	i = 0;
+	while (str[i] != '\0' )
+	{
+		i++;
+	}
+	return (i);
 }
