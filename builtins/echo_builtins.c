@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   echo_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:38:54 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/14 18:34:51 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/16 00:43:32 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
-void	print_args(char **args)
+void	print_args(char **args, int fd)
 {
 	int		i;
 
 	i = 0;
 	while (args[i])
 	{
-		write(1, args[i], ft_strlen(args[i]));
+		write(fd, args[i], ft_strlen(args[i]));
 		if (args[i + 1])
-			ft_putchar_fd(' ', STDOUT_FILENO);
+			ft_putchar_fd(' ', fd);
 		i++;
 	}
 }
@@ -52,8 +52,9 @@ int	execute_echo(t_data *data)
 			escape_newline = false;
 			i++;
 	}
-	print_args(data->cmd + i);
+	printf("out fd = %d\n", data->fd[1]);
+	print_args(data->cmd + i, data->fd[1]);
 	if (escape_newline)
-		ft_putchar_fd('\n', STDOUT_FILENO);
+		ft_putchar_fd('\n', data->fd[1]);
 	return (EXIT_SUCCESS);
 }

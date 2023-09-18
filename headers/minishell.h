@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 03:58:45 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/14 23:34:42 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/18 14:29:46 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdbool.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../lib/libft/libft.h"
@@ -125,7 +126,6 @@ int		ft_exit_number(char *str);
 
 int		execute_echo(t_data *data);
 int		ft_repeat_str(char repeat, char *str, int start);
-void	print_args(char **args);
 
 /* cd */
 int		home_case(t_data *data, t_main *main);
@@ -144,4 +144,6 @@ char	**dup_env(char **env);
 void	update_environment( t_main *main, char *new_var);
 void 	execute(t_main *main);
 char	*ft_getenv(char **env, const char *name);
+void	signal_handler(void);
+void	handle_global_signals(void);
 #endif

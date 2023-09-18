@@ -6,26 +6,50 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/09 20:47:57 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/15 11:39:08 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/18 14:34:15 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
+void pipe_child_proccess(t_main *main)
+{
+	char	*cmd_path;
+	close (main->data->fd[0]);
+	dup2(main->data->fd[1], STDOUT_FILENO);
+	close(main->data->fd[1]);
+	cmd_path = get_path_cmd(main->data->cmd[0], main->env);
+	if (execve(cmd_path, main->data->cmd, main->env) == - 1)
+		return (perror("error"));
+}
+
 void	execute(t_main *main)
 {
 	int		i;
+	// pid_t	pid;
 
 	i = 0;
 	while (i < main->procs)
 	{
-		if (is_builtin(main->data[i].cmd[0]))
-			execute_builtins(&main->data[i], main);
+		if (i == 0)
+		{
+			if (is_builtin(main->data[i].cmd[0]))
+				execute_builtins(&main->data[i], main);
+			else
+				if (execute_external(&main->data[i], main) == -1)
+					return ;
+			i++;
+		}
 		else
-			if (execute_external(&main->data[i], main) == -1)
-				return ;
-		i++;
+			if (is_builtin(main->data[i].cmd[0]))
+			{
+				if (main->data[i].fd[1] == 1)
+					pipe_child_proccess(main);
+				else
+					execute_builtins(&main->data[i], main);
+			}
 	}
+
 }
 
 int	is_not_spaces(char *str)
@@ -53,6 +77,7 @@ int	main(int argc, char **argv, char **env)
 	main.error_code = 0;
 	while (1)
 	{
+		signal_handler();
 		message = readline("minishell$->: ");
 		if (message[0] != '\0' && is_not_spaces(message))
 		{

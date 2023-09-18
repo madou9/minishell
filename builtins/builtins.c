@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:26 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/14 23:56:10 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/16 00:44:52 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,17 @@ int	execute_external(t_data *data, t_main *main)
 		printf("fork error");
 	else if (pid == 0)
 	{
+		if (data->fd[0] != 0)
+		{
+			if (dup2(data->fd[0], STDIN_FILENO) == -1)
+				return (perror("DUP2"), -1);
+			close(data->fd[0]);
+		}
+		if (data->fd[1] != 1)
+		{
+			dup2(data->fd[1], STDOUT_FILENO);
+			close(data->fd[1]);
+		}
 		cmd_path = get_path_cmd(data->cmd[0], main->env);
 		if (execve(cmd_path, data->cmd, main->env) == - 1)
 		{
@@ -91,3 +102,4 @@ int	execute_external(t_data *data, t_main *main)
 	waitpid(pid, &status, 0);
 	return (0);
 }
+
