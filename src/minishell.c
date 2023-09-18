@@ -6,7 +6,7 @@
 /*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/09 20:47:57 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/18 14:34:15 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/18 19:01:10 by ihama            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,13 @@ int	main(int argc, char **argv, char **env)
 		return (printf("%s: %s: no such file or directory\n", argv[0], argv[1]), 1);
 	main.env = dup_env(env);
 	main.error_code = 0;
+	signal_handler();
 	while (1)
 	{
-		signal_handler();
 		message = readline("minishell$->: ");
-		if (message[0] != '\0' && is_not_spaces(message))
+		if (message == NULL)
+            break ;
+		if (message[0] && is_not_spaces(message))
 		{
 			add_history(message);
 			main.list = NULL;
