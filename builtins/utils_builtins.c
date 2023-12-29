@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_builtins.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/27 17:11:50 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/15 20:25:04 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/20 01:25:31 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	update_environment( t_main *main, char *new_var)
 		i++;
 	}
 	free(main->env);
-	new_env[env_count] = new_var;
+	new_env[env_count] = ft_substr(new_var, 0, ft_strlen(new_var));
 	new_env[env_count + 1] = NULL;
 	main->env = new_env;
 }

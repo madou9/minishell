@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_builtins.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:40:25 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/14 23:57:05 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/20 01:12:33 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	print_export(t_main *main)
 	int		i;
 	int		j;
 
+	printf("EXPORT\n");
 	env = main->env;
 	i = 0;
 	while (env[i] != NULL)

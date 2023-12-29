@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd_builtins.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:37:57 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/14 18:25:34 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/19 22:53:10 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	execute_pwd(char **argv)
 	(void)argv;
 	pwdir = getcwd(NULL, 0);
 	if (pwdir == NULL)
-		ft_putstr_fd("Error: Unable to get current working directory\n", STDERR_FILENO);
+		ft_putstr_fd("Error: Unable to get current working directory\n",
+			STDERR_FILENO);
 	else
 	{
 		ft_putstr_fd(pwdir, STDOUT_FILENO);

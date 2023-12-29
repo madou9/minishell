@@ -6,7 +6,7 @@
 /*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:28:29 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/12 23:25:55 by voszadcs         ###   ########.fr       */
+/*   Updated: 2023/09/19 23:11:46 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,11 @@ void	is_heredoc(t_mylist *node)
 	if (node->type == LSLS && node->next
 		&& node->next->type == WRD_QUOTED)
 		node->next->type = WRD_REDIR;
+}
+
+void	expand_err(t_explst *node, int *i)
+{		
+	node->str = ft_substr(ft_itoa(g_error_code), 0,
+			ft_strlen(ft_itoa(g_error_code)));
+	*i = *i + 1;
 }

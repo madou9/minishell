@@ -6,7 +6,7 @@
 /*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 19:29:49 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/06 21:42:59 by voszadcs         ###   ########.fr       */
+/*   Updated: 2023/09/20 01:32:56 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,35 +63,19 @@ t_mylist	*split_str(char *str)
 void	postsplit(t_main *main)
 {
 	t_mylist	*head;
-	t_mylist	*temp_list;
 	t_mylist	*temp;
+	t_mylist	*temp_list;
 
 	head = main->list;
 	temp_list = NULL;
+	temp = NULL;
 	while (1)
 	{
-		if ((head->type == WRD || head->type == WRD_QUOTED) && head->value != NULL)
-		{
-			if (!temp_list)
-				temp_list = split_str(head->value);
-			else
-				temp->next = split_str(head->value);
-			temp = temp_list;
-			while (temp->next != NULL)
-				temp = temp->next;
-			temp->next = NULL;
-		}
+		if ((head->type == WRD || head->type == WRD_QUOTED)
+			&& head->value != NULL)
+			c1(&temp_list, &temp, &head);
 		else
-		{
-			if (!temp_list)
-				temp_list = create_redir_node(head->type, head->value);
-			else
-				temp->next = create_redir_node(head->type, head->value);
-			temp = temp_list;
-			while (temp->next != NULL)
-				temp = temp->next;
-			temp->next = NULL;
-		}
+			c2(&temp_list, &temp, &head);
 		if (!head->next)
 			break ;
 		head = head->next;

@@ -3,22 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 16:54:25 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/14 18:51:27 by ihama            ###   ########.fr       */
+/*   Updated: 2022/11/15 04:39:54 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include <stdarg.h>
-# include <stdio.h>
-# include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdbool.h>
 
 typedef struct s_list
 {
@@ -49,7 +45,6 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t n);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_strdup(const char *s1);
-int		ft_strcmp(char *s1, char *s2);
 
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);

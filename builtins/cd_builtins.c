@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   cd_builtins.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihama <ihama@student.42.fr>                +#+  +:+       +#+        */
+/*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:51:43 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/14 23:55:33 by ihama            ###   ########.fr       */
+/*   Updated: 2023/09/20 02:39:47 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/minishell.h"
 
-int	old_pwd(t_data *data,  t_main *main)
+int	old_pwd(t_data *data, t_main *main)
 {
 	char		*update_oldpwd;
 	char		*update_pwd;
 	char		*pwd;
 
-	if (ft_strncmp(data->cmd[1], "-", 1) == 0)
+	if (ft_strncmp(data->cmd[1], "~", 1) == 0)
 	{		
 		pwd = getcwd(NULL, 0);
 		if (!pwd)
@@ -36,14 +36,15 @@ int	execute_cd(t_data *data, t_main *main)
 {
 	if (data->cmd[1] == NULL)
 		home_case(data, main);
-	else if (ft_strncmp(data->cmd[1], "-", 1) == 0)
+	else if (ft_strncmp(data->cmd[1], "~", 1) == 0)
 		old_pwd(data, main);
 	else
 	{
 		if (chdir(data->cmd[1]) == -1)
 		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd("cd: ", STDERR_FILENO);
 			ft_putstr_fd(data->cmd[1], STDERR_FILENO);
+			ft_putstr_fd(": Not a directory\n", STDERR_FILENO);
 		}
 	}
 	return (EXIT_SUCCESS);

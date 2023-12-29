@@ -6,7 +6,7 @@
 /*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:15:45 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/14 02:18:42 by voszadcs         ###   ########.fr       */
+/*   Updated: 2023/09/18 02:18:39 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void	init_data(t_main *main)
 	main->data = malloc(sizeof(t_data) * count);
 	while (i < count)
 	{
-		main->data[i].fd[0] = 0;
-		main->data[i].fd[1] = 1;
+		main->data->fd[0] = 0;
+		main->data->fd[1] = 1;
 		main->data[i].index = i;
 		i++;
 	}
@@ -82,6 +82,5 @@ int	parser(t_main *main)
 	if (parse_redir(main) != 0)
 		return (parser_free(main), -1);
 	parse_command(main);
-	parser_free(main);
 	return (0);
 }

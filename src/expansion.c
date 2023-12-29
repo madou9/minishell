@@ -6,7 +6,7 @@
 /*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 17:25:59 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/12 23:27:08 by voszadcs         ###   ########.fr       */
+/*   Updated: 2023/09/19 23:12:01 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,7 @@ void	expand(char *str, t_main *main, int *i, t_explst *node)
 	j = 0;
 	*i = *i + 1;
 	if (str[*i] == '?' && str[*i - 1] == '$')
-	{	
-		node->str = ft_substr(ft_itoa(main->error_code), 0, ft_strlen(ft_itoa(main->error_code)));
-		*i = *i + 1;
-	}
+		expand_err(node, i);
 	else
 	{	
 		while (str[*i] != '\0' && (ft_isalnum(str[*i]) || str[*i] == '_'))

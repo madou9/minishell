@@ -6,7 +6,7 @@
 /*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 21:40:11 by voszadcs          #+#    #+#             */
-/*   Updated: 2023/09/14 02:18:27 by voszadcs         ###   ########.fr       */
+/*   Updated: 2023/09/19 23:10:45 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	count_args(t_mylist *head)
 	count = 0;
 	while (1)
 	{
-		if (head->type == WRD_CMD || head->type == WRD_SINGLE_Q)
+		if (head->value && (head->type == WRD_CMD \
+			|| head->type == WRD_SINGLE_Q))
 			count++;
 		if (!head->next || head->next->type == PIPE)
 			break ;
@@ -32,7 +33,8 @@ void	join_args(t_mylist *head, char **cmd)
 {
 	while (head->type != PIPE)
 	{
-		if (head->type == WRD_CMD || head->type == WRD_SINGLE_Q)
+		if (head->value && (head->type == WRD_CMD
+				|| head->type == WRD_SINGLE_Q))
 		{
 			*cmd = malloc(sizeof(char) * (ft_strlen(head->value) + 1));
 			*cmd = ft_substr(head->value, 0, ft_strlen(head->value));
@@ -43,21 +45,6 @@ void	join_args(t_mylist *head, char **cmd)
 		head = head->next;
 	}
 }
-
-// void	print_data(t_main *main, int i)
-// {
-// 	char **args;
-// 	int	j = 0;
-
-// 	args = main->data[i].cmd;
-
-// 		while (args[j] != NULL)
-// 		{
-// 			printf("%s ", args[j]);
-// 			j++;
-// 		}
-// 			printf("\n");
-// }
 
 void	parse_command(t_main *main)
 {
@@ -73,7 +60,6 @@ void	parse_command(t_main *main)
 		main->data[i].cmd = malloc(sizeof(char *) * (count + 1));
 		main->data[i].cmd[count] = NULL;
 		join_args(head, main->data[i].cmd);
-		// print_data(main, i);
 		while (head->next)
 		{
 			head = head->next;

@@ -6,7 +6,7 @@
 /*   By: voszadcs <voszadcs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 21:38:54 by ihama             #+#    #+#             */
-/*   Updated: 2023/09/16 00:43:32 by voszadcs         ###   ########.fr       */
+/*   Updated: 2023/09/19 22:52:47 by voszadcs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ int	execute_echo(t_data *data)
 
 	i = 1;
 	escape_newline = true;
-	while (data->cmd[i] && data->cmd[i][0] == '-' && ft_repeat_str('n', data->cmd[i], 1))
+	while (data->cmd[i] && data->cmd[i][0] == '-'
+		&& ft_repeat_str('n', data->cmd[i], 1))
 	{
 			escape_newline = false;
 			i++;
 	}
-	printf("out fd = %d\n", data->fd[1]);
-	print_args(data->cmd + i, data->fd[1]);
+	print_args(data->cmd + i, STDOUT_FILENO);
 	if (escape_newline)
-		ft_putchar_fd('\n', data->fd[1]);
+		ft_putchar_fd('\n', STDOUT_FILENO);
 	return (EXIT_SUCCESS);
 }
